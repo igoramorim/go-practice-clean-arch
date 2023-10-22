@@ -14,6 +14,10 @@ func TestNewOrder(t *testing.T) {
 		order, err := dorder.New(1, 10.99, 0.1)
 		assert.NoError(t, err)
 		assert.NotNil(t, order)
+
+		events := order.Events()
+		assert.Len(t, events, 1)
+		assert.IsType(t, dorder.OrderCreatedEvent{}, events[0])
 	})
 
 	t.Run("Return error: invalid id", func(t *testing.T) {

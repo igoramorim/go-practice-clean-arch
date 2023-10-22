@@ -1,5 +1,10 @@
 package dorder
 
+import (
+	"github.com/igoramorim/go-practice-clean-arch/pkg/ddd"
+	"time"
+)
+
 func New(id int64, price, tax float64) (*Order, error) {
 	orderID, err := NewID(id)
 	if err != nil {
@@ -14,19 +19,31 @@ func New(id int64, price, tax float64) (*Order, error) {
 		return nil, ErrInvalidTax
 	}
 
-	return &Order{
+	order := &Order{
 		id:         orderID,
 		price:      price,
 		tax:        tax,
 		finalPrice: 0,
-	}, nil
+		createdAt:  time.Now().UTC(),
+	}
+
+	orderCreatedEvent := NewOrderCreatedEvent(order)
+	order.defaultAggregate.AddEvent(orderCreatedEvent)
+
+	return order, nil
 }
 
 type Order struct {
-	id         ID
-	price      float64
-	tax        float64
-	finalPrice float64
+	id               ID
+	price            float64
+	tax              float64
+	finalPrice       float64
+	createdAt        time.Time
+	defaultAggregate ddd.DefaultAggregate
+}
+
+func (o *Order) Events() []ddd.Event {
+	return o.defaultAggregate.Events()
 }
 
 func (o *Order) CalculateFinalPrice() error {
