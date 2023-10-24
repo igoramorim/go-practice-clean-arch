@@ -20,7 +20,7 @@ func TestNewOrderCreatedEvent(t *testing.T) {
 		assert.Equal(t, int64(1), event.ID)
 		assert.Equal(t, 10.99, event.Price)
 		assert.Equal(t, 0.1, event.Tax)
-		assert.Equal(t, float64(0), event.FinalPrice)
+		assert.Equal(t, 0.0, event.FinalPrice)
 		assert.NotEmpty(t, event.CreatedAt)
 	})
 }

@@ -8,12 +8,15 @@ import (
 )
 
 func TestNewOrder(t *testing.T) {
-	// TODO: Add value assertion when create the getters for repository
-
 	t.Run("Create an Order successfully", func(t *testing.T) {
 		order, err := dorder.New(1, 10.99, 0.1)
 		assert.NoError(t, err)
 		assert.NotNil(t, order)
+		assert.Equal(t, int64(1), order.ID())
+		assert.Equal(t, 10.99, order.Price())
+		assert.Equal(t, 0.1, order.Tax())
+		assert.Equal(t, 0.0, order.FinalPrice())
+		assert.NotEmpty(t, order.CreatedAt())
 
 		events := order.Events()
 		assert.Len(t, events, 1)
@@ -40,8 +43,6 @@ func TestNewOrder(t *testing.T) {
 }
 
 func TestOrder_CalculateFinalPrice(t *testing.T) {
-	// TODO: Add value assertion when create the getters for repository
-
 	t.Run("Calculate final price successfully", func(t *testing.T) {
 		order, err := dorder.New(1, 10.99, 0.1)
 		assert.NotNil(t, order)
@@ -49,5 +50,6 @@ func TestOrder_CalculateFinalPrice(t *testing.T) {
 
 		err = order.CalculateFinalPrice()
 		assert.NoError(t, err)
+		assert.Equal(t, 11.09, order.FinalPrice())
 	})
 }

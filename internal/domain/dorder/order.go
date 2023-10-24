@@ -42,6 +42,26 @@ type Order struct {
 	defaultAggregate ddd.DefaultAggregate
 }
 
+func (o *Order) ID() int64 {
+	return o.id.value
+}
+
+func (o *Order) Price() float64 {
+	return o.price
+}
+
+func (o *Order) Tax() float64 {
+	return o.tax
+}
+
+func (o *Order) FinalPrice() float64 {
+	return o.finalPrice
+}
+
+func (o *Order) CreatedAt() time.Time {
+	return o.createdAt
+}
+
 func (o *Order) Events() []ddd.Event {
 	return o.defaultAggregate.Events()
 }
