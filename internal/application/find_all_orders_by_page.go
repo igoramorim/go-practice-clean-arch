@@ -17,15 +17,21 @@ type FindAllOrdersByPageService struct {
 	repo dorder.Repository
 }
 
-func (s *FindAllOrdersByPageService) Execute(ctx context.Context, input dorder.FindAllOrdersByPageUseCaseInput) ([]dorder.FindAllOrdersByPageUseCaseOutput, error) {
-	orders, err := s.repo.FindAllByPage(ctx, input.Page, input.Limit, input.Sort)
+func (s *FindAllOrdersByPageService) Execute(ctx context.Context, input dorder.FindAllOrdersByPageUseCaseInput) (dorder.FindAllOrdersByPageUseCaseOutput, error) {
+	orders, total, err := s.repo.FindAllByPage(ctx, input.Page, input.Limit, input.Sort)
 	if err != nil {
-		return nil, err
+		return dorder.FindAllOrdersByPageUseCaseOutput{}, err
 	}
 
-	output := make([]dorder.FindAllOrdersByPageUseCaseOutput, len(orders))
+	output := dorder.FindAllOrdersByPageUseCaseOutput{
+		Paging: dorder.Paging{
+			Limit: int64(input.Limit),
+			Total: total,
+		},
+		Orders: make([]dorder.FindAllOrdersByPageUseCaseOutputItem, input.Limit),
+	}
 	for i, order := range orders {
-		output[i].Map(order)
+		output.Orders[i].Map(order)
 	}
 
 	return output, nil

@@ -30,6 +30,16 @@ type FindAllOrdersByPageUseCaseInput struct {
 }
 
 type FindAllOrdersByPageUseCaseOutput struct {
+	Paging Paging
+	Orders []FindAllOrdersByPageUseCaseOutputItem
+}
+
+type Paging struct {
+	Limit int64
+	Total int64
+}
+
+type FindAllOrdersByPageUseCaseOutputItem struct {
 	ID         int64
 	Price      float64
 	Tax        float64
@@ -37,7 +47,7 @@ type FindAllOrdersByPageUseCaseOutput struct {
 	CreatedAt  string
 }
 
-func (out *FindAllOrdersByPageUseCaseOutput) Map(order *Order) {
+func (out *FindAllOrdersByPageUseCaseOutputItem) Map(order *Order) {
 	out.ID = order.id.value
 	out.Price = order.price
 	out.Tax = order.tax
@@ -46,5 +56,5 @@ func (out *FindAllOrdersByPageUseCaseOutput) Map(order *Order) {
 }
 
 type FindAllOrdersByPageUseCase interface {
-	Execute(ctx context.Context, input FindAllOrdersByPageUseCaseInput) ([]FindAllOrdersByPageUseCaseOutput, error)
+	Execute(ctx context.Context, input FindAllOrdersByPageUseCaseInput) (FindAllOrdersByPageUseCaseOutput, error)
 }

@@ -53,9 +53,9 @@ func (s *OrderService) FindAllOrdersByPage(ctx context.Context, req *pb.FindAllO
 		return nil, err
 	}
 
-	output := make([]*pb.FindAllOrdersByPageList, 0, len(res))
-	for _, r := range res {
-		output = append(output, &pb.FindAllOrdersByPageList{
+	output := make([]*pb.FindAllOrdersByPageItem, 0, len(res.Orders))
+	for _, r := range res.Orders {
+		output = append(output, &pb.FindAllOrdersByPageItem{
 			Id:         r.ID,
 			Price:      float32(r.Price),
 			Tax:        float32(r.Tax),
@@ -64,5 +64,11 @@ func (s *OrderService) FindAllOrdersByPage(ctx context.Context, req *pb.FindAllO
 		})
 	}
 
-	return &pb.FindAllOrdersByPageResponse{Orders: output}, nil
+	return &pb.FindAllOrdersByPageResponse{
+		Paging: &pb.Paging{
+			Limit: res.Paging.Limit,
+			Total: res.Paging.Total,
+		},
+		Orders: output,
+	}, nil
 }
