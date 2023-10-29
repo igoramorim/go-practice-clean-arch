@@ -1,6 +1,7 @@
 package webserver
 
 import (
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 )
@@ -28,5 +29,5 @@ func (s *WebServer) AddHandler(method, path string, handler http.HandlerFunc) {
 }
 
 func (s *WebServer) Run() error {
-	return http.ListenAndServe(":"+s.port, s.router)
+	return http.ListenAndServe(fmt.Sprintf(":%s", s.port), s.router)
 }
