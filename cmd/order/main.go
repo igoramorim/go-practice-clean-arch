@@ -2,11 +2,17 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/grpcorder"
+	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/pb"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/repository/mysqlorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/rest/restorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/rest/webserver"
 	"github.com/igoramorim/go-practice-clean-arch/internal/application"
 	"github.com/igoramorim/go-practice-clean-arch/pkg/ddd"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"net"
 	"net/http"
 )
 
@@ -31,7 +37,22 @@ func main() {
 	webServer := webserver.New("8080")
 	webServer.AddHandler(http.MethodPost, "/orders", webOrderHandler.CreateOrder)
 	webServer.AddHandler(http.MethodGet, "/orders", webOrderHandler.FindAllByPage)
-	if err := webServer.Run(); err != nil {
+	go func() {
+		if err := webServer.Run(); err != nil {
+			panic(err)
+		}
+	}()
+
+	// Grpc
+	grpcServer := grpc.NewServer()
+	grpcOrderService := grpcorder.NewService(createOrderUseCase, findAllOrdersByPageUseCase)
+	pb.RegisterOrderServiceServer(grpcServer, grpcOrderService)
+	reflection.Register(grpcServer) // For evans
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", "50051"))
+	if err != nil {
+		panic(err)
+	}
+	if err = grpcServer.Serve(lis); err != nil {
 		panic(err)
 	}
 }
