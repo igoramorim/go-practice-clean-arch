@@ -23,9 +23,9 @@ func (s *FindAllOrdersByPageService) Execute(ctx context.Context, input dorder.F
 		return nil, err
 	}
 
-	output := make([]dorder.FindAllOrdersByPageUseCaseOutput, 0, len(orders))
-	for i, out := range output {
-		out.Map(orders[i])
+	output := make([]dorder.FindAllOrdersByPageUseCaseOutput, len(orders))
+	for i, order := range orders {
+		output[i].Map(order)
 	}
 
 	return output, nil
