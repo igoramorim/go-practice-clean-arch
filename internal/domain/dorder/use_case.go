@@ -23,13 +23,13 @@ type CreateOrderUseCase interface {
 	Execute(ctx context.Context, input CreateOrderUseCaseInput) (CreateOrderUseCaseOutput, error)
 }
 
-type FindAllByPageUseCaseInput struct {
+type FindAllOrdersByPageUseCaseInput struct {
 	Page  int
 	Limit int
 	Sort  string
 }
 
-type FindAllByPageUseCaseOutput struct {
+type FindAllOrdersByPageUseCaseOutput struct {
 	ID         int64
 	Price      float64
 	Tax        float64
@@ -37,7 +37,7 @@ type FindAllByPageUseCaseOutput struct {
 	CreatedAt  string
 }
 
-func (out *FindAllByPageUseCaseOutput) Map(order *Order) {
+func (out *FindAllOrdersByPageUseCaseOutput) Map(order *Order) {
 	out.ID = order.id.value
 	out.Price = order.price
 	out.Tax = order.tax
@@ -45,6 +45,6 @@ func (out *FindAllByPageUseCaseOutput) Map(order *Order) {
 	out.CreatedAt = order.createdAt.Format(time.RFC3339Nano)
 }
 
-type FindAllByPageUseCase interface {
-	Execute(ctx context.Context, input FindAllByPageUseCaseInput) ([]FindAllByPageUseCaseOutput, error)
+type FindAllOrdersByPageUseCase interface {
+	Execute(ctx context.Context, input FindAllOrdersByPageUseCaseInput) ([]FindAllOrdersByPageUseCaseOutput, error)
 }

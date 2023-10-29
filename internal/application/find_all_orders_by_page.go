@@ -11,19 +11,19 @@ func NewFindAllOrdersByPageService(repo dorder.Repository) *FindAllOrdersByPageS
 	}
 }
 
-var _ dorder.FindAllByPageUseCase = (*FindAllOrdersByPageService)(nil)
+var _ dorder.FindAllOrdersByPageUseCase = (*FindAllOrdersByPageService)(nil)
 
 type FindAllOrdersByPageService struct {
 	repo dorder.Repository
 }
 
-func (s *FindAllOrdersByPageService) Execute(ctx context.Context, input dorder.FindAllByPageUseCaseInput) ([]dorder.FindAllByPageUseCaseOutput, error) {
+func (s *FindAllOrdersByPageService) Execute(ctx context.Context, input dorder.FindAllOrdersByPageUseCaseInput) ([]dorder.FindAllOrdersByPageUseCaseOutput, error) {
 	orders, err := s.repo.FindAllByPage(ctx, input.Page, input.Limit, input.Sort)
 	if err != nil {
 		return nil, err
 	}
 
-	output := make([]dorder.FindAllByPageUseCaseOutput, 0, len(orders))
+	output := make([]dorder.FindAllOrdersByPageUseCaseOutput, 0, len(orders))
 	for i, out := range output {
 		out.Map(orders[i])
 	}
