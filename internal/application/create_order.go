@@ -27,7 +27,7 @@ func (s *CreateOrderService) Execute(ctx context.Context, input dorder.CreateOrd
 		return dorder.CreateOrderUseCaseOutput{}, err
 	}
 
-	err = s.repo.Save(ctx, order)
+	err = s.repo.Create(ctx, order)
 	if err != nil {
 		return dorder.CreateOrderUseCaseOutput{}, err
 	}
