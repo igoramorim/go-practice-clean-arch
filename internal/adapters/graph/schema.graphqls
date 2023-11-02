@@ -1,0 +1,37 @@
+type Order {
+    id: Int!
+    Price: Float!
+    Tax: Float!
+    FinalPrice: Float!
+    CreatedAt: String!
+}
+
+input CreateOrderInput {
+    id : Int!
+    Price: Float!
+    Tax: Float!
+}
+
+type Mutation {
+    createOrder(input: CreateOrderInput): Order
+}
+
+input FindAllOrdersByPageInput {
+    Page: Int
+	Limit: Int
+	Sort: String
+}
+
+type Paging {
+	Limit: Int!
+	Total: Int!
+}
+
+type FindAllOrdersByPageOutput {
+    Paging: Paging
+    Orders: [Order]!
+}
+
+type Query {
+    findAllOrdersByPage(input: FindAllOrdersByPageInput): FindAllOrdersByPageOutput!
+}

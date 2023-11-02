@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/graph"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/grpcorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/pb"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/repository/mysqlorder"
@@ -37,6 +40,18 @@ func main() {
 	webServer := webserver.New("8080")
 	webServer.AddHandler(http.MethodPost, "/orders", webOrderHandler.CreateOrder)
 	webServer.AddHandler(http.MethodGet, "/orders", webOrderHandler.FindAllByPage)
+
+	// GraphQL
+	graphQLServer := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
+		CreateOrderUseCase:         createOrderUseCase,
+		FindAllOrdersByPageUseCase: findAllOrdersByPageUseCase,
+	}}))
+	webServer.AddHandler(http.MethodPost, "/query", func(w http.ResponseWriter, r *http.Request) {
+		graphQLServer.ServeHTTP(w, r)
+	})
+	webServer.AddHandler(http.MethodGet, "/playground", playground.Handler("GraphQL Playground", "/query"))
+
+	// Web Server Up!
 	go func() {
 		if err := webServer.Run(); err != nil {
 			panic(err)
