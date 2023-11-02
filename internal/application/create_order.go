@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// TODO: Add unit test.
+
 func NewCreateOrderService(repo dorder.Repository, publisher ddd.Publisher) *CreateOrderService {
 	return &CreateOrderService{
 		repo:      repo,
@@ -21,7 +23,9 @@ type CreateOrderService struct {
 	publisher ddd.Publisher
 }
 
-func (s *CreateOrderService) Execute(ctx context.Context, input dorder.CreateOrderUseCaseInput) (dorder.CreateOrderUseCaseOutput, error) {
+func (s *CreateOrderService) Execute(ctx context.Context,
+	input dorder.CreateOrderUseCaseInput) (dorder.CreateOrderUseCaseOutput, error) {
+
 	order, err := dorder.New(input.ID, input.Price, input.Tax)
 	if err != nil {
 		return dorder.CreateOrderUseCaseOutput{}, err

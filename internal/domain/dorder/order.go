@@ -42,6 +42,16 @@ type Order struct {
 	defaultAggregate ddd.DefaultAggregate
 }
 
+func (o *Order) CalculateFinalPrice() error {
+	finalPrice := o.price + o.tax
+	if finalPrice <= 0 {
+		return ErrInvalidFinalPrice
+	}
+
+	o.finalPrice = finalPrice
+	return nil
+}
+
 func (o *Order) ID() int64 {
 	return o.id.value
 }
@@ -64,14 +74,4 @@ func (o *Order) CreatedAt() time.Time {
 
 func (o *Order) Events() []ddd.Event {
 	return o.defaultAggregate.Events()
-}
-
-func (o *Order) CalculateFinalPrice() error {
-	finalPrice := o.price + o.tax
-	if finalPrice <= 0 {
-		return ErrInvalidFinalPrice
-	}
-
-	o.finalPrice = finalPrice
-	return nil
 }

@@ -2,6 +2,8 @@ package model
 
 import "github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
 
+// TODO: Add unit test.
+
 func MapCreateOrderOutput(out dorder.CreateOrderUseCaseOutput) *Order {
 	return &Order{
 		ID:         int(out.ID),

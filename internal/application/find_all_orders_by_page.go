@@ -5,6 +5,8 @@ import (
 	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
 )
 
+// TODO: Add unit test.
+
 func NewFindAllOrdersByPageService(repo dorder.Repository) *FindAllOrdersByPageService {
 	return &FindAllOrdersByPageService{
 		repo: repo,
@@ -17,7 +19,9 @@ type FindAllOrdersByPageService struct {
 	repo dorder.Repository
 }
 
-func (s *FindAllOrdersByPageService) Execute(ctx context.Context, input dorder.FindAllOrdersByPageUseCaseInput) (dorder.FindAllOrdersByPageUseCaseOutput, error) {
+func (s *FindAllOrdersByPageService) Execute(ctx context.Context,
+	input dorder.FindAllOrdersByPageUseCaseInput) (dorder.FindAllOrdersByPageUseCaseOutput, error) {
+
 	orders, total, err := s.repo.FindAllByPage(ctx, input.Page, input.Limit, input.Sort)
 	if err != nil {
 		return dorder.FindAllOrdersByPageUseCaseOutput{}, err
