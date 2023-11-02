@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/igoramorim/go-practice-clean-arch/config"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/graph"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/grpcorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/pb"
@@ -20,7 +21,10 @@ import (
 )
 
 func main() {
-	// TODO: Load configs
+	cfg, err := config.Load()
+	if err != nil {
+		panic(err)
+	}
 
 	// TODO: SQl conn
 
@@ -37,7 +41,7 @@ func main() {
 	webOrderHandler := restorder.NewHandler(createOrderUseCase, findAllOrdersByPageUseCase)
 
 	// Web Server
-	webServer := webserver.New("8080")
+	webServer := webserver.New(cfg.WebServerPort)
 	webServer.AddHandler(http.MethodPost, "/orders", webOrderHandler.CreateOrder)
 	webServer.AddHandler(http.MethodGet, "/orders", webOrderHandler.FindAllByPage)
 
@@ -53,7 +57,7 @@ func main() {
 
 	// Web Server Up!
 	go func() {
-		if err := webServer.Run(); err != nil {
+		if err = webServer.Run(); err != nil {
 			panic(err)
 		}
 	}()
@@ -63,7 +67,7 @@ func main() {
 	grpcOrderService := grpcorder.NewService(createOrderUseCase, findAllOrdersByPageUseCase)
 	pb.RegisterOrderServiceServer(grpcServer, grpcOrderService)
 	reflection.Register(grpcServer) // For evans
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", "50051"))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.GrpcServerPort))
 	if err != nil {
 		panic(err)
 	}

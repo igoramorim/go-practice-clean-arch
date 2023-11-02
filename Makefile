@@ -1,3 +1,6 @@
+env:
+	@cp .env_template  .env
+
 protoc-order:
 	@protoc --go_out=. --go-grpc_out=. internal/adapters/grpc/protofiles/order.proto
 
