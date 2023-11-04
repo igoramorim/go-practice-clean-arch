@@ -35,8 +35,9 @@ type FindAllOrdersByPageUseCaseOutput struct {
 }
 
 type Paging struct {
-	Limit int64
-	Total int64
+	Limit  int64
+	Offset int64
+	Total  int64
 }
 
 type FindAllOrdersByPageUseCaseOutputItem struct {

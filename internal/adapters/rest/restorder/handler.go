@@ -2,6 +2,7 @@ package restorder
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
 	"net/http"
 	"strconv"
@@ -34,6 +35,10 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.createOrderUseCase.Execute(r.Context(), input)
 	if err != nil {
+		if errors.Is(err, dorder.ErrOrderAlreadyExists) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -29,8 +29,9 @@ func (s *FindAllOrdersByPageService) Execute(ctx context.Context,
 
 	output := dorder.FindAllOrdersByPageUseCaseOutput{
 		Paging: dorder.Paging{
-			Limit: int64(input.Limit),
-			Total: total,
+			Limit:  int64(input.Limit),
+			Offset: int64(input.Page),
+			Total:  total,
 		},
 		Orders: make([]dorder.FindAllOrdersByPageUseCaseOutputItem, input.Limit),
 	}

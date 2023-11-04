@@ -19,6 +19,11 @@ func Load() (Cfg, error) {
 }
 
 type Cfg struct {
-	WebServerPort  string `mapstructure:"WEB_SERVER_PORT"`
-	GrpcServerPort string `mapstructure:"GRPC_SERVER_PORT"`
+	WebServerPort   string `mapstructure:"WEB_SERVER_PORT"`
+	GrpcServerPort  string `mapstructure:"GRPC_SERVER_PORT"`
+	DBMySQLUser     string `mapstructure:"DB_MYSQL_USER"`
+	DBMySQLPass     string `mapstructure:"DB_MYSQL_PASS"`
+	DBMySQLHost     string `mapstructure:"DB_MYSQL_HOST"`
+	DBMySQLPort     string `mapstructure:"DB_MYSQL_PORT"`
+	DBMySQLDatabase string `mapstructure:"DB_MYSQL_DATABASE"`
 }

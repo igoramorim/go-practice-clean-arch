@@ -9,6 +9,7 @@ import (
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/graph"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/grpcorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/pb"
+	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/repository/mysql"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/repository/mysqlorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/rest/restorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/rest/webserver"
@@ -26,12 +27,13 @@ func main() {
 		panic(err)
 	}
 
-	// TODO: SQl conn
+	db := mysql.OpenConn(cfg.DBMySQLUser, cfg.DBMySQLPass, cfg.DBMySQLHost, cfg.DBMySQLPort, cfg.DBMySQLDatabase)
+	defer db.Close()
 
 	// TODO: Publishers
 
 	// Repositories
-	orderRepository := mysqlorder.New(nil)
+	orderRepository := mysqlorder.New(db)
 
 	// UseCases
 	createOrderUseCase := application.NewCreateOrderService(orderRepository, &mockPublisher{})

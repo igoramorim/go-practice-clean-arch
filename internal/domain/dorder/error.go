@@ -8,4 +8,6 @@ var (
 	ErrInvalidPrice      = errors.New("product price is invalid")
 	ErrInvalidTax        = errors.New("product tax is invalid")
 	ErrInvalidFinalPrice = errors.New("product final price is invalid")
+
+	ErrOrderAlreadyExists = errors.New("product already exists")
 )
