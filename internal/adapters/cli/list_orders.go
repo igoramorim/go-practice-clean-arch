@@ -3,19 +3,16 @@ package cli
 import (
 	"context"
 	"fmt"
-	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/repository/mysqlorder"
-	"github.com/igoramorim/go-practice-clean-arch/internal/application"
 	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
 
 	"github.com/spf13/cobra"
 )
 
 func init() {
-	// TODO: Fix DI
+	ctx := context.Background()
+	client := newOrderClient()
 
-	repo := mysqlorder.New(nil)
-	useCase := application.NewFindAllOrdersByPageService(repo)
-	listOrdersCmd := newListOrdersCmd(useCase)
+	listOrdersCmd := newListOrdersCmd(ctx, client)
 	orderCmd.AddCommand(listOrdersCmd)
 
 	listOrdersCmd.Flags().IntP("page", "p", 1, "Page to request.")
@@ -23,7 +20,7 @@ func init() {
 	listOrdersCmd.Flags().StringP("sort", "s", "asc", "How the orders will be sorted by id.")
 }
 
-func newListOrdersCmd(useCase dorder.FindAllOrdersByPageUseCase) *cobra.Command {
+func newListOrdersCmd(ctx context.Context, client *orderClient) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
 		Short: "List all created orders.",
@@ -44,19 +41,18 @@ func newListOrdersCmd(useCase dorder.FindAllOrdersByPageUseCase) *cobra.Command 
 				return err
 			}
 
-			fmt.Println("page", page)
-			fmt.Println("limit", limit)
-			fmt.Println("sort", sort)
-
 			in := dorder.FindAllOrdersByPageUseCaseInput{
 				Page:  page,
 				Limit: limit,
 				Sort:  sort,
 			}
-			out, err := useCase.Execute(context.Background(), in)
-			fmt.Println(out)
+			response, err := client.listOrders(ctx, in)
+			if err != nil {
+				return err
+			}
 
-			return err
+			fmt.Println(response)
+			return nil
 		},
 	}
 }

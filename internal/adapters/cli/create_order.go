@@ -3,18 +3,15 @@ package cli
 import (
 	"context"
 	"fmt"
-	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/repository/mysqlorder"
-	"github.com/igoramorim/go-practice-clean-arch/internal/application"
 	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
 	"github.com/spf13/cobra"
 )
 
 func init() {
-	// TODO: Fix DI
+	ctx := context.Background()
+	client := newOrderClient()
 
-	repo := mysqlorder.New(nil)
-	useCase := application.NewCreateOrderService(repo, nil)
-	createOrderCmd := newCreateOrderCmd(useCase)
+	createOrderCmd := newCreateOrderCmd(ctx, client)
 	orderCmd.AddCommand(createOrderCmd)
 
 	// TODO: Handle errors
@@ -29,7 +26,7 @@ func init() {
 	_ = createOrderCmd.MarkFlagRequired("tax")
 }
 
-func newCreateOrderCmd(useCase dorder.CreateOrderUseCase) *cobra.Command {
+func newCreateOrderCmd(ctx context.Context, client *orderClient) *cobra.Command {
 	return &cobra.Command{
 		Use:   "create",
 		Short: "Create a new order.",
@@ -50,19 +47,18 @@ func newCreateOrderCmd(useCase dorder.CreateOrderUseCase) *cobra.Command {
 				return err
 			}
 
-			fmt.Println("id", id)
-			fmt.Println("price", price)
-			fmt.Println("tax", tax)
-
 			in := dorder.CreateOrderUseCaseInput{
 				ID:    id,
 				Price: price,
 				Tax:   tax,
 			}
-			out, err := useCase.Execute(context.Background(), in)
-			fmt.Println(out)
+			response, err := client.createOrder(ctx, in)
+			if err != nil {
+				return err
+			}
 
-			return err
+			fmt.Println(response)
+			return nil
 		},
 	}
 }
