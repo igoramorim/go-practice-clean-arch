@@ -45,7 +45,7 @@ func (oc *orderClient) createOrder(ctx context.Context, in dorder.CreateOrderUse
 		return "", err
 	}
 
-	return string(resBody), nil
+	return oc.prettyJSON(resBody)
 }
 
 func (oc *orderClient) listOrders(ctx context.Context, in dorder.FindAllOrdersByPageUseCaseInput) (string, error) {
@@ -72,5 +72,14 @@ func (oc *orderClient) listOrders(ctx context.Context, in dorder.FindAllOrdersBy
 		return "", err
 	}
 
-	return string(resBody), nil
+	return oc.prettyJSON(resBody)
+}
+
+func (oc *orderClient) prettyJSON(data []byte) (string, error) {
+	var prettyJSON bytes.Buffer
+	if err := json.Indent(&prettyJSON, data, "", "    "); err != nil {
+		return string(data), nil
+	}
+
+	return prettyJSON.String(), nil
 }
