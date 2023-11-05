@@ -12,6 +12,7 @@ type Repository interface {
 }
 
 // TODO: Unit tests.
+
 func FromRepository(id int64, price, tax, finalPrice float64, createdAt time.Time) *Order {
 	return &Order{
 		id:         idFromRepository(id),

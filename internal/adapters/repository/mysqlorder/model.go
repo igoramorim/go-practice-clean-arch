@@ -14,6 +14,7 @@ type PersistableOrder struct {
 }
 
 // TODO: Unit tests.
+
 func PersistableFromDomain(order *dorder.Order) PersistableOrder {
 	return PersistableOrder{
 		ID:         order.ID(),
@@ -25,6 +26,7 @@ func PersistableFromDomain(order *dorder.Order) PersistableOrder {
 }
 
 // TODO: Unit tests.
+
 func PersistableToDomain(persistable PersistableOrder) *dorder.Order {
 	return dorder.FromRepository(persistable.ID, persistable.Price, persistable.Tax, persistable.FinalPrice,
 		persistable.CreatedAt)

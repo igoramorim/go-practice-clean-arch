@@ -6,6 +6,8 @@ import (
 	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
 )
 
+// TODO: Add unit tests.
+
 func NewService(
 	createOrderUseCase dorder.CreateOrderUseCase,
 	findAllOrdersByPageUseCase dorder.FindAllOrdersByPageUseCase) *OrderService {

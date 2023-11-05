@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-// TODO: Add unit tests
+// TODO: Add unit tests.
 
 func NewHandler(
 	createOrderUseCase dorder.CreateOrderUseCase,

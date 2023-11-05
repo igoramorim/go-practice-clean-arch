@@ -31,6 +31,8 @@ func (s *CreateOrderService) Execute(ctx context.Context,
 		return dorder.CreateOrderUseCaseOutput{}, err
 	}
 
+	// TODO: Add unit of work and repo rollback if publishes fails.
+
 	err = s.repo.Create(ctx, order)
 	if err != nil {
 		return dorder.CreateOrderUseCaseOutput{}, err
