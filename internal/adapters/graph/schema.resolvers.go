@@ -38,9 +38,6 @@ func (r *queryResolver) FindAllOrdersByPage(ctx context.Context, input *model.Fi
 	if input.Limit == nil {
 		limit = 10
 	}
-	if input.Sort == nil {
-		sort = ""
-	}
 	in := dorder.FindAllOrdersByPageUseCaseInput{
 		Page:  page,
 		Limit: limit,

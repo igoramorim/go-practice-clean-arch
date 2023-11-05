@@ -28,6 +28,7 @@ type Order struct {
 }
 
 type Paging struct {
-	Limit int `json:"Limit"`
-	Total int `json:"Total"`
+	Limit  int `json:"Limit"`
+	Offset int `json:"Offset"`
+	Total  int `json:"Total"`
 }

@@ -65,8 +65,9 @@ type ComplexityRoot struct {
 	}
 
 	Paging struct {
-		Limit func(childComplexity int) int
-		Total func(childComplexity int) int
+		Limit  func(childComplexity int) int
+		Offset func(childComplexity int) int
+		Total  func(childComplexity int) int
 	}
 
 	Query struct {
@@ -167,6 +168,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Paging.Limit(childComplexity), true
+
+	case "Paging.Offset":
+		if e.complexity.Paging.Offset == nil {
+			break
+		}
+
+		return e.complexity.Paging.Offset(childComplexity), true
 
 	case "Paging.Total":
 		if e.complexity.Paging.Total == nil {
@@ -434,6 +442,8 @@ func (ec *executionContext) fieldContext_FindAllOrdersByPageOutput_Paging(ctx co
 			switch field.Name {
 			case "Limit":
 				return ec.fieldContext_Paging_Limit(ctx, field)
+			case "Offset":
+				return ec.fieldContext_Paging_Offset(ctx, field)
 			case "Total":
 				return ec.fieldContext_Paging_Total(ctx, field)
 			}
@@ -815,6 +825,50 @@ func (ec *executionContext) _Paging_Limit(ctx context.Context, field graphql.Col
 }
 
 func (ec *executionContext) fieldContext_Paging_Limit(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Paging",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Paging_Offset(ctx context.Context, field graphql.CollectedField, obj *model.Paging) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Paging_Offset(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Offset, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Paging_Offset(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Paging",
 		Field:      field,
@@ -3095,6 +3149,11 @@ func (ec *executionContext) _Paging(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = graphql.MarshalString("Paging")
 		case "Limit":
 			out.Values[i] = ec._Paging_Limit(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Offset":
+			out.Values[i] = ec._Paging_Offset(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

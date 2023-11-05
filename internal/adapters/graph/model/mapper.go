@@ -28,8 +28,9 @@ func MapFindAllOrdersByPageOutput(out dorder.FindAllOrdersByPageUseCaseOutput) *
 
 	return &FindAllOrdersByPageOutput{
 		Paging: &Paging{
-			Limit: int(out.Paging.Limit),
-			Total: int(out.Paging.Total),
+			Limit:  int(out.Paging.Limit),
+			Offset: int(out.Paging.Offset),
+			Total:  int(out.Paging.Total),
 		},
 		Orders: orders,
 	}
