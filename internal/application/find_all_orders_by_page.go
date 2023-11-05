@@ -33,7 +33,7 @@ func (s *FindAllOrdersByPageService) Execute(ctx context.Context,
 			Offset: int64(input.Page),
 			Total:  total,
 		},
-		Orders: make([]dorder.FindAllOrdersByPageUseCaseOutputItem, input.Limit),
+		Orders: make([]dorder.FindAllOrdersByPageUseCaseOutputItem, len(orders)),
 	}
 	for i, order := range orders {
 		output.Orders[i].Map(order)
