@@ -22,6 +22,8 @@ import (
 )
 
 func main() {
+	// TODO: Add basic logging.
+
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
