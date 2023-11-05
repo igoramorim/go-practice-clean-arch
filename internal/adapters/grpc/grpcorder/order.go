@@ -44,7 +44,9 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 	}, nil
 }
 
-func (s *OrderService) FindAllOrdersByPage(ctx context.Context, req *pb.FindAllOrdersByPageRequest) (*pb.FindAllOrdersByPageResponse, error) {
+func (s *OrderService) FindAllOrdersByPage(ctx context.Context,
+	req *pb.FindAllOrdersByPageRequest) (*pb.FindAllOrdersByPageResponse, error) {
+
 	input := dorder.FindAllOrdersByPageUseCaseInput{
 		Page:  int(req.Page),
 		Limit: int(req.Limit),
@@ -68,8 +70,9 @@ func (s *OrderService) FindAllOrdersByPage(ctx context.Context, req *pb.FindAllO
 
 	return &pb.FindAllOrdersByPageResponse{
 		Paging: &pb.Paging{
-			Limit: res.Paging.Limit,
-			Total: res.Paging.Total,
+			Limit:  res.Paging.Limit,
+			Offset: res.Paging.Offset,
+			Total:  res.Paging.Total,
 		},
 		Orders: output,
 	}, nil

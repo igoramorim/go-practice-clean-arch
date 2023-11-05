@@ -29,7 +29,8 @@ message FindAllOrdersByPageResponse {
 
 message Paging {
   int64 limit = 1;
-  int64 total = 2;
+  int64 offset = 2;
+  int64 total = 3;
 }
 
 message FindAllOrdersByPageItem {
