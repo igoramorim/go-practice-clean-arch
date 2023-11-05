@@ -8,12 +8,9 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "go-practice-clean-arch",
-	Short: "A brief description of your application",
-	Long:  `Bla bla`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Use:   "clean-arch",
+	Short: "This project is an exercise about clean arch.",
+	Long:  `This project is an exercise about clean arch.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

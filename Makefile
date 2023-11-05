@@ -9,3 +9,9 @@ grpc-evans:
 
 graphql-generate:
 	@go run github.com/99designs/gqlgen generate
+
+order-system:
+	@go run cmd/order/main.go
+
+build-cli:
+	@go build -o bin/cli cmd/cli/main.go
