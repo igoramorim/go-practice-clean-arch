@@ -93,7 +93,7 @@ func (r *Repository) FindAllByPage(ctx context.Context, page, limit int, sort st
 }
 
 func (r *Repository) Count(ctx context.Context) (int64, error) {
-	stmt, err := r.db.Prepare("select max(seq) from orders")
+	stmt, err := r.db.Prepare("select coalesce(max(seq), 0) from orders")
 	if err != nil {
 		return 0, err
 	}
