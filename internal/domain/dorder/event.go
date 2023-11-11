@@ -1,6 +1,9 @@
 package dorder
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type OrderCreatedEvent struct {
 	ID         int64   `json:"id"`
@@ -12,6 +15,11 @@ type OrderCreatedEvent struct {
 
 func (e OrderCreatedEvent) Name() string {
 	return "order_created"
+}
+
+func (e OrderCreatedEvent) Payload() []byte {
+	payload, _ := json.Marshal(e)
+	return payload
 }
 
 func NewOrderCreatedEvent(order *Order) OrderCreatedEvent {

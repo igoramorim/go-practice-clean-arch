@@ -9,18 +9,18 @@ import (
 
 // TODO: Add unit test.
 
-func NewCreateOrderService(repo dorder.Repository, publisher ddd.Publisher) *CreateOrderService {
+func NewCreateOrderService(repo dorder.Repository, eventDispatcher ddd.EventDispatcher) *CreateOrderService {
 	return &CreateOrderService{
-		repo:      repo,
-		publisher: publisher,
+		repo:            repo,
+		eventDispatcher: eventDispatcher,
 	}
 }
 
 var _ dorder.CreateOrderUseCase = (*CreateOrderService)(nil)
 
 type CreateOrderService struct {
-	repo      dorder.Repository
-	publisher ddd.Publisher
+	repo            dorder.Repository
+	eventDispatcher ddd.EventDispatcher
 }
 
 func (s *CreateOrderService) Execute(ctx context.Context,
@@ -38,7 +38,7 @@ func (s *CreateOrderService) Execute(ctx context.Context,
 		return dorder.CreateOrderUseCaseOutput{}, err
 	}
 
-	err = s.publisher.Publish(ctx, order)
+	err = s.eventDispatcher.Dispatch(ctx, order)
 	if err != nil {
 		return dorder.CreateOrderUseCaseOutput{}, err
 	}

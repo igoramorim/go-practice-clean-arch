@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -9,11 +8,13 @@ import (
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/graph"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/grpcorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/pb"
+	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/publisher/rabbitmq"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/repository/mysql"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/repository/mysqlorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/rest/restorder"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/rest/webserver"
 	"github.com/igoramorim/go-practice-clean-arch/internal/application"
+	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
 	"github.com/igoramorim/go-practice-clean-arch/pkg/ddd"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -29,16 +30,25 @@ func main() {
 		panic(err)
 	}
 
+	// DB Connections
 	db := mysql.OpenConn(cfg.DBMySQLUser, cfg.DBMySQLPass, cfg.DBMySQLHost, cfg.DBMySQLPort, cfg.DBMySQLDatabase)
 	defer db.Close()
 
-	// TODO: Publishers
+	// Publishers
+	rabbitMQChannel := rabbitmq.OpenChannel(cfg.RabbitMQUser, cfg.RabbitMQPass, cfg.RabbitMQHost, cfg.RabbitMQPort)
+	defer rabbitMQChannel.Close()
+
+	eventDispatcher := ddd.NewDefaultEventDispatcher()
+	err = eventDispatcher.Register(dorder.OrderCreatedEvent{}, rabbitmq.NewOrderCreatedHandler(rabbitMQChannel))
+	if err != nil {
+		panic(err)
+	}
 
 	// Repositories
 	orderRepository := mysqlorder.New(db)
 
 	// UseCases
-	createOrderUseCase := application.NewCreateOrderService(orderRepository, &mockPublisher{})
+	createOrderUseCase := application.NewCreateOrderService(orderRepository, eventDispatcher)
 	findAllOrdersByPageUseCase := application.NewFindAllOrdersByPageService(orderRepository)
 
 	// Web Handlers
@@ -78,11 +88,4 @@ func main() {
 	if err = grpcServer.Serve(lis); err != nil {
 		panic(err)
 	}
-}
-
-type mockPublisher struct {
-}
-
-func (mock *mockPublisher) Publish(ctx context.Context, aggregates ...ddd.Aggregate) error {
-	return nil
 }

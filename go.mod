@@ -6,6 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.40
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-sql-driver/mysql v1.7.1
+	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
@@ -37,6 +38,7 @@ require (
 	github.com/spf13/afero v1.10.0 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/streadway/amqp v1.1.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/urfave/cli/v2 v2.25.5 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect

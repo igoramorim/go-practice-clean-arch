@@ -1,9 +1,8 @@
 package ddd
 
-import "context"
-
 type Event interface {
 	Name() string
+	Payload() []byte
 }
 
 type Aggregate interface {
@@ -22,8 +21,4 @@ func (da *DefaultAggregate) Events() []Event {
 
 func (da *DefaultAggregate) AddEvent(events ...Event) {
 	da.events = append(da.events, events...)
-}
-
-type Publisher interface {
-	Publish(ctx context.Context, aggregates ...Aggregate) error
 }
