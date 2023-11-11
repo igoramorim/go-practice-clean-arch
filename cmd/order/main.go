@@ -18,6 +18,7 @@ import (
 	"github.com/igoramorim/go-practice-clean-arch/pkg/ddd"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"log"
 	"net"
 	"net/http"
 )
@@ -75,6 +76,7 @@ func main() {
 			panic(err)
 		}
 	}()
+	log.Println("web server running on port:", cfg.WebServerPort)
 
 	// Grpc
 	grpcServer := grpc.NewServer()
@@ -85,6 +87,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	log.Println("grpc running on port:", cfg.GrpcServerPort)
 	if err = grpcServer.Serve(lis); err != nil {
 		panic(err)
 	}

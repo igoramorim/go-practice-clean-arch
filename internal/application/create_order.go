@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
 	"github.com/igoramorim/go-practice-clean-arch/pkg/ddd"
+	"log"
 	"time"
 )
 
@@ -25,6 +26,8 @@ type CreateOrderService struct {
 
 func (s *CreateOrderService) Execute(ctx context.Context,
 	input dorder.CreateOrderUseCaseInput) (dorder.CreateOrderUseCaseOutput, error) {
+
+	log.Printf("creating order with input: %+v\n", input)
 
 	order, err := dorder.New(input.ID, input.Price, input.Tax)
 	if err != nil {

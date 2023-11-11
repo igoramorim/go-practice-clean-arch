@@ -6,6 +6,8 @@ package graph
 
 import (
 	"context"
+	"github.com/pkg/errors"
+	"log"
 
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/graph/model"
 	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
@@ -20,6 +22,7 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.CreateO
 	}
 	out, err := r.CreateOrderUseCase.Execute(ctx, in)
 	if err != nil {
+		log.Printf("[ERROR] %s\n", errors.WithMessage(err, "graphql creating order").Error())
 		return nil, err
 	}
 
@@ -45,6 +48,7 @@ func (r *queryResolver) FindAllOrdersByPage(ctx context.Context, input *model.Fi
 	}
 	out, err := r.FindAllOrdersByPageUseCase.Execute(ctx, in)
 	if err != nil {
+		log.Printf("[ERROR] %s\n", errors.WithMessage(err, "graphql listing orders").Error())
 		return nil, err
 	}
 

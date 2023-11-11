@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
+	"log"
 )
 
 // TODO: Add unit test.
@@ -21,6 +22,8 @@ type FindAllOrdersByPageService struct {
 
 func (s *FindAllOrdersByPageService) Execute(ctx context.Context,
 	input dorder.FindAllOrdersByPageUseCaseInput) (dorder.FindAllOrdersByPageUseCaseOutput, error) {
+
+	log.Printf("listing orders with input: %+v\n", input)
 
 	orders, total, err := s.repo.FindAllByPage(ctx, input.Page, input.Limit, input.Sort)
 	if err != nil {

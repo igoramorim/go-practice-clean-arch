@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/igoramorim/go-practice-clean-arch/internal/adapters/grpc/pb"
 	"github.com/igoramorim/go-practice-clean-arch/internal/domain/dorder"
+	"github.com/pkg/errors"
+	"log"
 )
 
 // TODO: Add unit tests.
@@ -32,6 +34,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 	}
 	res, err := s.createOrderUseCase.Execute(ctx, input)
 	if err != nil {
+		log.Printf("[ERROR] %s\n", errors.WithMessage(err, "grpc creating order").Error())
 		return nil, err
 	}
 
@@ -54,6 +57,7 @@ func (s *OrderService) FindAllOrdersByPage(ctx context.Context,
 	}
 	res, err := s.findAllOrdersByPageUseCase.Execute(ctx, input)
 	if err != nil {
+		log.Printf("[ERROR] %s\n", errors.WithMessage(err, "grpc listing orders").Error())
 		return nil, err
 	}
 
